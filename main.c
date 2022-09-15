@@ -42,7 +42,12 @@ FILE *parseCommandLine(int argc, char **argv, int *bits) {
  * size: the size of the array
  **/
 void printDataAsHex(unsigned char *data, size_t size) {
-    printf("TODO 1: printDataAsHex (2)");
+    // The width of the hex dump as always 16-bytes with the extra spaces between the
+    // pairs plus an extra space on the end to separate it from section (3) the character representation.
+    for (int i = 0; i < size - 1; i += 2) {
+        printf(" ");
+        printf("%02x%02x", data[i], data[i + 1]);
+    }
 }
 
 /**
@@ -54,7 +59,45 @@ void printDataAsHex(unsigned char *data, size_t size) {
  * size: the size of the array
  **/
 void printDataAsChars(unsigned char *data, size_t size) {
-    printf("TODO 2: printDataAsChars (3)");
+    size_t diff = 16 - size;
+    int iter = 0;
+    if (diff > 0) {
+        while (iter < diff) {
+            printf("  ");
+            ++iter;
+        }
+        printf("  ");
+    }
+    for (int i = 0; i < size; ++i) {
+        printf("%c", data[i]);
+        if (data[i] == "\n") {
+            printf(".");
+        }
+        if (data[i] < 32 || data[i] > 126) {
+            printf(".");
+        }
+    }
+
+}
+
+void printDataAsBinary(unsigned char *data, size_t size) {
+    // section (2) only outputs six bytes rather than 16, and bytes are not paired.
+    int binary[size * 8];
+    for (int i = 0; i < size; ++i) {
+        char x = data[i];
+        for (int j = 0; j < 8; ++i) {
+            if (x % 2 == 1) {
+                binary[j * (i + 1)] = 1;
+            }
+            else {
+                binary[j * (i + 1)] = 0;
+            }
+            x = x / 2;
+        }
+    }
+    for (int k = 0; k < size * 8; ++k) {
+        printf("%d", binary[k]);
+    }
 }
 
 void readAndPrintInputAsHex(FILE *input) {
@@ -80,7 +123,18 @@ void readAndPrintInputAsHex(FILE *input) {
  * input: input stream
  **/
 void readAndPrintInputAsBits(FILE *input) {
-    printf("TODO 3: readAndPrintInputAsBits\n");
+    unsigned char data[16];
+    int numBytesRead = fread(data, 1, 16, input);
+    unsigned int offset = 0;
+    while (numBytesRead != 0) {
+        printf("%08x:", offset);
+        offset += numBytesRead;
+        printDataAsBinary(data, numBytesRead);
+        printf("  ");
+        printDataAsChars(data, numBytesRead);
+        printf("\n");
+        numBytesRead = fread(data, 1, 16, input);
+    }
 }
 
 int main(int argc, char **argv) {
