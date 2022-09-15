@@ -60,12 +60,13 @@ void printDataAsHex(unsigned char *data, size_t size) {
  **/
 void printDataAsChars(unsigned char *data, size_t size) {
     for (int i = 0; i < size; ++i) {
-        printf("%c", data[i]);
-        if (data[i] < 32 || data[i] > 126) {
+        if (data[i] >= 32 && data[i] <= 126) {
+            printf("%c", data[i]);
+        }
+        else {
             printf(".");
         }
     }
-
 }
 
 void printDataAsBinary(unsigned char *data, size_t size) {
@@ -118,6 +119,13 @@ void readAndPrintInputAsBits(FILE *input) {
         printf("%08x:", offset);
         offset += numBytesRead;
         printDataAsBinary(data, numBytesRead);
+        if (numBytesRead < 6) {
+            int iter = numBytesRead;
+            while (iter < 6) {
+                printf("         ");
+                ++iter;
+            }
+        }
         printf("  ");
         printDataAsChars(data, numBytesRead);
         printf("\n");
@@ -128,8 +136,8 @@ void readAndPrintInputAsBits(FILE *input) {
 int main(int argc, char **argv) {
     int bits = FALSE;
     FILE *input = parseCommandLine(argc, argv, &bits);
-    bits = TRUE;
-
+    // bits = TRUE;
+    printf("TODO: fix formatting of character output on hex code\n");
     if (bits == FALSE) {
         readAndPrintInputAsHex(input);
     } else {
