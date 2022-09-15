@@ -42,15 +42,11 @@ FILE *parseCommandLine(int argc, char **argv, int *bits) {
  * size: the size of the array
  **/
 void printDataAsHex(unsigned char *data, size_t size) {
-    // The width of the hex dump as always 16-bytes with the extra spaces between the
-    // pairs plus an extra space on the end to separate it from section (3) the character representation.
-    // 16 bytes, each byte is two digits, paired together with spaces between each 4
-    // rewrite the function for this
-    // that means that there should be the same number of 2 digit pairs of hex as total number of 8 digit binary sets
-        // which means half of the groups in hex as there are in binary because they are paired together
-    for (int i = 0; i < size - 1; i += 2) {
-        printf(" ");
-        printf("%02x%02x", data[i], data[i + 1]);
+    for (int i = 0; i < size; ++i) {
+        if (i % 2 == 0) {
+            printf(" ");
+        }
+        printf("%02x", data[i]);
     }
 }
 
@@ -63,20 +59,8 @@ void printDataAsHex(unsigned char *data, size_t size) {
  * size: the size of the array
  **/
 void printDataAsChars(unsigned char *data, size_t size) {
-    size_t diff = 16 - size;
-    int iter = 0;
-    if (diff > 0) {
-        while (iter < diff) {
-            printf("  ");
-            ++iter;
-        }
-        printf("  ");
-    }
     for (int i = 0; i < size; ++i) {
         printf("%c", data[i]);
-        if (data[i] == "\n") {
-            printf(".");
-        }
         if (data[i] < 32 || data[i] > 126) {
             printf(".");
         }
@@ -85,25 +69,22 @@ void printDataAsChars(unsigned char *data, size_t size) {
 }
 
 void printDataAsBinary(unsigned char *data, size_t size) {
-    // section (2) only outputs six bytes rather than 16, and bytes are not paired.
-    // rewrite this so that it accurately stores the bits as binary
-    // output is six bytes, each byte is represented by 8 binary digits
-    // bytes are not paired
-    int binary[size * 8];
     for (int i = 0; i < size; ++i) {
         char x = data[i];
-        for (int j = 0; j < 8; ++i) {
-            if (x % 2 == 1) {
-                binary[j * (i + 1)] = 1;
+        int binary[8];
+        for (int j = 0; j < 8; ++j) {
+            if ((x % 2) == 1) {
+                binary[j] = 1;
             }
             else {
-                binary[j * (i + 1)] = 0;
+                binary[j] = 0;
             }
             x = x / 2;
         }
-    }
-    for (int k = 0; k < size * 8; ++k) {
-        printf("%d", binary[k]);
+        printf(" ");
+        for (int k = 7; k >= 0; --k) {
+            printf("%d", binary[k]);
+        }
     }
 }
 
@@ -147,6 +128,7 @@ void readAndPrintInputAsBits(FILE *input) {
 int main(int argc, char **argv) {
     int bits = FALSE;
     FILE *input = parseCommandLine(argc, argv, &bits);
+    bits = TRUE;
 
     if (bits == FALSE) {
         readAndPrintInputAsHex(input);
