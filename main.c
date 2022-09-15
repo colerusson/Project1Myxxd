@@ -146,8 +146,6 @@ void readAndPrintInputAsBits(FILE *input) {
 int main(int argc, char **argv) {
     int bits = FALSE;
     FILE *input = parseCommandLine(argc, argv, &bits);
-    // bits = TRUE;
-    printf("TODO: fix formatting of character output on hex code\n");
     if (bits == FALSE) {
         readAndPrintInputAsHex(input);
     } else {
