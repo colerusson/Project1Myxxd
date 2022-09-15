@@ -44,6 +44,10 @@ FILE *parseCommandLine(int argc, char **argv, int *bits) {
 void printDataAsHex(unsigned char *data, size_t size) {
     // The width of the hex dump as always 16-bytes with the extra spaces between the
     // pairs plus an extra space on the end to separate it from section (3) the character representation.
+    // 16 bytes, each byte is two digits, paired together with spaces between each 4
+    // rewrite the function for this
+    // that means that there should be the same number of 2 digit pairs of hex as total number of 8 digit binary sets
+        // which means half of the groups in hex as there are in binary because they are paired together
     for (int i = 0; i < size - 1; i += 2) {
         printf(" ");
         printf("%02x%02x", data[i], data[i + 1]);
@@ -82,6 +86,9 @@ void printDataAsChars(unsigned char *data, size_t size) {
 
 void printDataAsBinary(unsigned char *data, size_t size) {
     // section (2) only outputs six bytes rather than 16, and bytes are not paired.
+    // rewrite this so that it accurately stores the bits as binary
+    // output is six bytes, each byte is represented by 8 binary digits
+    // bytes are not paired
     int binary[size * 8];
     for (int i = 0; i < size; ++i) {
         char x = data[i];
@@ -123,8 +130,8 @@ void readAndPrintInputAsHex(FILE *input) {
  * input: input stream
  **/
 void readAndPrintInputAsBits(FILE *input) {
-    unsigned char data[16];
-    int numBytesRead = fread(data, 1, 16, input);
+    unsigned char data[6];
+    int numBytesRead = fread(data, 1, 6, input);
     unsigned int offset = 0;
     while (numBytesRead != 0) {
         printf("%08x:", offset);
@@ -133,7 +140,7 @@ void readAndPrintInputAsBits(FILE *input) {
         printf("  ");
         printDataAsChars(data, numBytesRead);
         printf("\n");
-        numBytesRead = fread(data, 1, 16, input);
+        numBytesRead = fread(data, 1, 6, input);
     }
 }
 
