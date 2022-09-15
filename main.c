@@ -97,6 +97,16 @@ void readAndPrintInputAsHex(FILE *input) {
         printf("%08x:", offset);
         offset += numBytesRead;
         printDataAsHex(data, numBytesRead);
+        if (numBytesRead < 16) {
+            int diff = 16 - numBytesRead;
+            for (int i = numBytesRead; i < 16; ++i) {
+                printf("  ");
+            }
+            int spaces = diff / 2;
+            for (int j = 0; j < spaces; ++j) {
+                printf(" ");
+            }
+        }
         printf("  ");
         printDataAsChars(data, numBytesRead);
         printf("\n");
@@ -136,7 +146,7 @@ void readAndPrintInputAsBits(FILE *input) {
 int main(int argc, char **argv) {
     int bits = FALSE;
     FILE *input = parseCommandLine(argc, argv, &bits);
-    // bits = TRUE;
+    bits = TRUE;
     printf("TODO: fix formatting of character output on hex code\n");
     if (bits == FALSE) {
         readAndPrintInputAsHex(input);
