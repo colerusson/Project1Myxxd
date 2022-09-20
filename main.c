@@ -71,16 +71,16 @@ void printDataAsChars(unsigned char *data, size_t size) {
 
 void printDataAsBinary(unsigned char *data, size_t size) {
     for (int i = 0; i < size; ++i) {
-        char x = data[i];
+        unsigned char indexChar = data[i];
         int binary[8];
         for (int j = 0; j < 8; ++j) {
-            if ((x % 2) == 1) {
+            if ((indexChar % 2) == 1) {
                 binary[j] = 1;
             }
             else {
                 binary[j] = 0;
             }
-            x = x / 2;
+            indexChar = indexChar / 2;
         }
         printf(" ");
         for (int k = 7; k >= 0; --k) {
@@ -146,6 +146,7 @@ void readAndPrintInputAsBits(FILE *input) {
 int main(int argc, char **argv) {
     int bits = FALSE;
     FILE *input = parseCommandLine(argc, argv, &bits);
+    bits = TRUE;
     if (bits == FALSE) {
         readAndPrintInputAsHex(input);
     } else {
