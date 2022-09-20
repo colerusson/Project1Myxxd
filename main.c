@@ -146,7 +146,6 @@ void readAndPrintInputAsBits(FILE *input) {
 int main(int argc, char **argv) {
     int bits = FALSE;
     FILE *input = parseCommandLine(argc, argv, &bits);
-    bits = TRUE;
     if (bits == FALSE) {
         readAndPrintInputAsHex(input);
     } else {
